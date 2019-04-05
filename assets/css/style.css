@@ -1,0 +1,25 @@
+@font-face {
+    font-family: 'BebasNeue';
+    src: url('../font/BebasNeue-Regular.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background-color: #2b2d5c;
+    width: 100%;
+    margin: 0px;
+}
+
+#pong {
+    position: absolute;
+    margin: auto;
+    border-radius: 10px;
+    border: 5px solid #FFF;
+    border-left-color: #e74c3c;
+    border-right-color: #f1c40f;
+    transform: rotate(-90deg);
+    margin-top: 500px;
+    width: 100%;
+    height: auto;
+}

@@ -1,0 +1,186 @@
+<html>
+        <head>
+                <meta charset="UTF-8">
+                <title>Pong Gyroscope Javascript</title>
+                <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+            
+            </head>
+            
+            <body>
+                <canvas id="pong" width="600" height="400"></canvas>
+                <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        var gyro = 0;
+
+        var socket = io.connect('http://51.77.212.215:8081');
+        socket.on('Gyro', function(Gyro) {
+            gyro = Gyro;
+        });
+
+        const canvas = document.getElementById("pong");
+
+        const ctx = canvas.getContext('2d');
+
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 10,
+            velocityX: 5,
+            velocityY: 5,
+            speed: 7,
+            color: "#FFF"
+        }
+
+        const player1 = {
+            x: 0,
+            y: (canvas.height - 100) / 2,
+            width: 10,
+            height: 100,
+            score: 0,
+            color: "#e74c3c"
+        }
+
+        const player2 = {
+            x: canvas.width - 10,
+            y: (canvas.height - 100) / 2,
+            width: 10,
+            height: 100,
+            score: 0,
+            color: "#f1c40f"
+        }
+
+        const net = {
+            x: (canvas.width - 10) / 2,
+            y: 0,
+            height: 25,
+            width: 10,
+            color: "WHITE"
+        }
+
+        function drawRect(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, w, h);
+        }
+
+        function drawArc(x, y, r, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function getMousePos() {
+            player2.y = 6.8 * parseFloat(gyro[1]) + 150;
+            player1.y = 6.8 * parseFloat(gyro[0]) + 150;
+        }
+
+        function resetBall() {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.velocityX = -ball.velocityX;
+            ball.speed = 7;
+        }
+
+        function drawNet() {
+            for (let i = 0; i <= canvas.height; i += 35) {
+                drawRect(net.x, net.y + i, net.width, net.height, net.color);
+            }
+        }
+
+        function drawText(text, x, y) {
+            ctx.fillStyle = "#FFF";
+            ctx.font = "75px BebasNeue";
+            ctx.fillText(text, x, y);
+        }
+
+        function collision(b, p) {
+            p.top = p.y;
+            p.bottom = p.y + p.height;
+            p.left = p.x;
+            p.right = p.x + p.width;
+
+            b.top = b.y - b.radius;
+            b.bottom = b.y + b.radius;
+            b.left = b.x - b.radius;
+            b.right = b.x + b.radius;
+
+            return p.left < b.right && p.top < b.bottom && p.right > b.left && p.bottom > b.top;
+        }
+
+        function update() {
+
+            console.log('Gamma player 1 = ' + player1.y);
+
+            console.log('Gamma player 2 = ' + player2.y);
+
+            getMousePos();
+
+            if (ball.x - ball.radius < 0) {
+                player2.score++;
+                resetBall();
+            } else if (ball.x + ball.radius > canvas.width) {
+                player1.score++;
+                resetBall();
+            }
+
+            ball.x += ball.velocityX;
+            ball.y += ball.velocityY;
+
+            if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+                ball.velocityY = -ball.velocityY;
+            }
+
+            let player = (ball.x + ball.radius < canvas.width / 2) ? player1 : player2;
+
+            if (collision(ball, player)) {
+
+                let collidePoint = (ball.y - (player.y + player.height / 2));
+
+                collidePoint = collidePoint / (player.height / 2);
+
+                let angleRad = (Math.PI / 4) * collidePoint;
+
+                let direction = (ball.x + ball.radius < canvas.width / 2) ? 1 : -1;
+                ball.velocityX = direction * ball.speed * Math.cos(angleRad);
+                ball.velocityY = ball.speed * Math.sin(angleRad);
+
+                ball.speed += 0.3;
+        }
+
+        function render() {
+
+            drawRect(0, 0, canvas.width, canvas.height, "#27ae60");
+
+            drawText(player1.score, canvas.width / 4, canvas.height / 5);
+
+            drawText(player2.score, 3 * canvas.width / 4, canvas.height / 5);
+
+            drawNet();
+
+            drawRect(player1.x, player1.y, player1.width, player1.height, player1.color);
+
+            drawRect(player2.x, player2.y, player2.width, player2.height, player2.color);
+
+            drawArc(ball.x, ball.y, ball.radius, ball.color)
+        }
+
+        function game() {
+            if (player1.score === 20 ){
+                alert("Player 1 Win !")
+            }else if (player2.score === 20 ){
+                alert("Player 2 Win !")
+            } else {
+                update()
+            }
+            render()
+        }
+        let framePerSecond = 50;
+
+        let loop = setInterval(game, 1000 / framePerSecond)
+
+    </script>
+    </body>
+</html>
+

@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Socket.io</title>
+    </head>
+
+    <body>
+        <h1>Communication avec socket.io !</h1>
+
+        <p><input type="button" value="Embêter le serveur" id="poke" /></p>
+
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://51.77.212.215:8080');
+            socket.on('message', function(message) {
+                alert('Le serveur a un message pour vous : ' + message);
+            })
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener("deviceorientation", sendGyro, false);
+            } else {
+                // Le navigateur ne supporte pas l'événement deviceorientation
+            }
+
+            function sendGyro(){
+                socket.emit('message', event.alpha);
+            }
+            $('#poke').click(function () {
+                    setInterval(function(){
+                        sendGyro()
+                    },300)
+                
+            })
+        </script>
+    </body>
+</html>

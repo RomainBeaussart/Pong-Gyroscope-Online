@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Pong - Player 1</title>
+    </head>
+
+    <body>
+        <div>
+            <h1>Player 1</h1>
+            &lArr; Inclinez votre téléphone a gauche et a droite pour controller votre pad &rArr;
+        </div>
+
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://51.77.212.215:8080');
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener("deviceorientation", sendGyro, false);
+            } else {
+                // Le navigateur ne supporte pas l'événement deviceorientation
+            }
+
+            function sendGyro(){
+                socket.emit('Gyro-1', event.gamma);
+            }
+        </script>
+    </body>
+    <style>
+        body{
+            font-family: 'Arial';
+            background: #e74c3c;
+            color: #FFF;
+        }
+
+        div{
+            text-align: center;
+            height: 100%;
+            font-size: 50px;
+        }
+    </style>
+</html>
