@@ -147,6 +147,7 @@
                 ball.velocityY = ball.speed * Math.sin(angleRad);
 
                 ball.speed += 0.3;
+            }
         }
 
         function render() {
@@ -169,7 +170,7 @@
         function game() {
             if (player1.score === 20 ){
                 alert("Player 1 Win !")
-            }else if (player2.score === 20 ){
+            } else if (player2.score === 20 ){
                 alert("Player 2 Win !")
             } else {
                 update()
@@ -178,9 +179,10 @@
         }
         let framePerSecond = 50;
 
-        let loop = setInterval(game, 1000 / framePerSecond)
-
+        setInterval(game, 1000 / framePerSecond);
     </script>
-    </body>
-</html>
 
+</body>
+
+</html>
+    
